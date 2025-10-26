@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ILY Dino 💚</title>
+  <style>
+    :root{
+      --bg: #0f172a;          /* slate-900 */
+      --card: #111827;        /* gray-900 */
+      --accent: #22c55e;      /* green-500 */
+      --accent-2: #a7f3d0;    /* emerald-200 */
+      --text: #e5e7eb;        /* gray-200 */
+      --muted: #94a3b8;       /* slate-400 */
+      --ring: rgba(34,197,94,.45);
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color:var(--text); background: radial-gradient(1200px 800px at 20% -10%, #064e3b 0%, transparent 60%),
+                         radial-gradient(900px 600px at 120% 20%, #1e3a8a 0%, transparent 55%),
+                         var(--bg);
+      display:grid; place-items:center; padding:24px;
+    }
+    .wrap{width:min(920px, 100%);}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+    }
+    h1{margin:0 0 6px 0; font-size:clamp(24px, 3vw, 36px)}
+    .sub{color:var(--muted); margin-bottom:18px}
+
+    .q{margin:22px 0}
+    .q h2{font-size:18px; margin:0 0 12px 0}
+
+    .choices{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px}
+    .opt{position:relative}
+    .opt input{position:absolute; inset:0; opacity:0; pointer-events:none}
+    .box{
+      display:flex; align-items:center; gap:10px; min-height:56px;
+      background:var(--card); border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; padding:12px 14px; cursor:pointer; user-select:none;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    }
+    .k{width:28px; aspect-ratio:1; border-radius:10px; border:1.5px solid rgba(255,255,255,.18); display:grid; place-items:center; font-weight:700; color:var(--muted)}
+    .t{font-size:15px}
+    .opt input:focus + .box{outline:3px solid var(--ring)}
+    .opt input:checked + .box{
+      border-color: var(--accent);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.12) inset, 0 10px 30px rgba(34,197,94,.15);
+      transform: translateY(-2px);
+    }
+    .opt input:checked + .box .k{background:linear-gradient(180deg, var(--accent), var(--accent-2)); color:#0b3b2c; border-color:transparent}
+
+    .picked{margin-top:8px; font-size:14px; color:var(--accent-2)}
+
+    .actions{display:flex; gap:12px; margin-top:20px}
+    button{
+      appearance:none; border:0; border-radius:14px; padding:12px 16px; font-weight:700; cursor:pointer;
+    }
+    .submit{background:linear-gradient(180deg, #22c55e, #16a34a); color:#052e1b}
+    .reset{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,.12)}
+
+    .result{display:none; margin-top:22px; background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.25); border-radius:18px; padding:18px}
+    .sweet{font-size:18px; line-height:1.5}
+
+    .footer{margin-top:16px; font-size:12px; color:var(--muted)}
+
+    /* Tiny confetti */
+    .confetti{position:fixed; inset:0; pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>ILY Dino 🦖💚</h1>
+      <p class="sub">Jawab jujur yaaa. Klik kotak pilihan biar kepilih ✨</p>
+
+      <form id="formIly" autocomplete="off">
+        <!-- Q1 -->
+        <div class="q" data-q="q1">
+          <h2>1) Sayang aku nggak??</h2>
+          <div class="choices">
+            <label class="opt">
+              <input type="radio" name="q1" value="iya" />
+              <div class="box">
+                <div class="k">A</div>
+                <div class="t">Iya</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q1" value="iya banget" />
+              <div class="box">
+                <div class="k">B</div>
+                <div class="t">Iya banget</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q1" value="harus iya" />
+              <div class="box">
+                <div class="k">C</div>
+                <div class="t">Harus iya</div>
+              </div>
+            </label>
+          </div>
+          <div class="picked" hidden></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q" data-q="q2">
+          <h2>2) Seberapa sayang?</h2>
+          <div class="choices">
+            <label class="opt">
+              <input type="radio" name="q2" value="100%" />
+              <div class="box">
+                <div class="k">A</div>
+                <div class="t">100%</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q2" value="1000%" />
+              <div class="box">
+                <div class="k">B</div>
+                <div class="t">1000%</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q2" value="se-alam semesta" />
+              <div class="box">
+                <div class="k">C</div>
+                <div class="t">Se alam semesta</div>
+              </div>
+            </label>
+          </div>
+          <div class="picked" hidden></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q" data-q="q3">
+          <h2>3) Nama pacar kamu siapa?</h2>
+          <div class="choices">
+            <label class="opt">
+              <input type="radio" name="q3" value="ean" />
+              <div class="box">
+                <div class="k">A</div>
+                <div class="t">ean</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q3" value="eon" />
+              <div class="box">
+                <div class="k">B</div>
+                <div class="t">eon</div>
+              </div>
+            </label>
+            <label class="opt">
+              <input type="radio" name="q3" value="ya jelas eanlah bos make nanya" />
+              <div class="box">
+                <div class="k">C</div>
+                <div class="t">Ya jelas eanlah bos, make nanya</div>
+              </div>
+            </label>
+          </div>
+          <div class="picked" hidden></div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="submit">Kirim Jawaban 💌</button>
+          <button type="button" class="reset" id="btnReset">Ulangi</button>
+        </div>
+
+        <div class="result" id="result">
+          <div class="sweet" id="sweetText"></div>
+          <div class="footer">— dikirim khusus buat Dino tersayang 🦖✨</div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <canvas class="confetti" id="confetti" width="0" height="0"></canvas>
+
+  <script>
+    const form = document.getElementById('formIly');
+    const result = document.getElementById('result');
+    const sweetText = document.getElementById('sweetText');
+    const btnReset = document.getElementById('btnReset');
+
+    // Live feedback: tampilkan jawaban yang diklik
+    document.querySelectorAll('.q').forEach(q => {
+      q.addEventListener('click', e => {
+        const input = e.target.closest('label')?.querySelector('input');
+        if(!input) return;
+        input.checked = true; // memastikan kepilih saat kotak di-klik
+        const picked = q.querySelector('.picked');
+        picked.hidden = false;
+        picked.textContent = `Kamu memilih: "${input.value}"`;
+      });
+    });
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+      const q1 = data.get('q1');
+      const q2 = data.get('q2');
+      const q3 = data.get('q3');
+      if(!q1 || !q2 || !q3){
+        alert('Jawab semua dulu ya cintaa 😘');
+        return;
+      }
+      // Pesan manis
+      const pesan = `
+        Haii Dino kesayanganku 🦖💚\n\n
+       makasih udah jawab suami aku:\n
+        • Sayang aku: ${q1}.\n
+        • Seberapa sayang: ${q2}.\n
+        • Nama pacarmu: ${q3}.\n\n
+        makasih ayang, Aku nggak tahu soal masa depan, tapi aku tahu, aku mau jalanin semuanya bareng kamu. karena hal hal kecil mengenai kamu bikin aku seneng teyuss. Sehat selalu ayang! Makasih yaw udah hadir.. aku bersyukur punya kamu sangat sangat bersyukur. Sama aku terus ya sayang, ilysm 💌✨
+      `;
+      sweetText.textContent = pesan;
+      result.style.display = 'block';
+      boom();
+      result.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    btnReset.addEventListener('click', ()=>{
+      form.reset();
+      document.querySelectorAll('.picked').forEach(p=>{p.hidden = true; p.textContent='';});
+      result.style.display = 'none';
+      clearConfetti();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    // Simple confetti (vanilla, lightweight)
+    const cvs = document.getElementById('confetti');
+    const ctx = cvs.getContext('2d');
+    let particles = []; let raf;
+
+    function resize(){
+      cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+    } resize(); window.addEventListener('resize', resize);
+
+    function boom(){
+      particles = [];
+      for(let i=0;i<120;i++){
+        particles.push({
+          x: cvs.width/2,
+          y: cvs.height/4,
+          vx: (Math.random()-0.5)*8,
+          vy: Math.random()*-6 - 4,
+          g: 0.18 + Math.random()*0.05,
+          s: 4+Math.random()*4,
+          a: 1,
+        });
+      }
+      cancelAnimationFrame(raf);
+      animate();
+    }
+
+    function animate(){
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      particles.forEach(p=>{
+        p.vy += p.g; p.x += p.vx; p.y += p.vy; p.a -= 0.006;
+        ctx.globalAlpha = Math.max(p.a,0);
+        ctx.fillStyle = ['#22c55e','#a7f3d0','#86efac','#4ade80','#34d399'][Math.floor(Math.random()*5)];
+        ctx.fillRect(p.x, p.y, p.s, p.s);
+      });
+      ctx.globalAlpha = 1;
+      particles = particles.filter(p=>p.a>0 && p.y < cvs.height+20);
+      if(particles.length){ raf = requestAnimationFrame(animate); }
+    }
+    function clearConfetti(){
+      cancelAnimationFrame(raf); ctx.clearRect(0,0,cvs.width,cvs.height); particles=[];
+    }
+  </script>
+</body>
+</html>
